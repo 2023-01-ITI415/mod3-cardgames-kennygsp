@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: d0d82b6184e574f8895567c4ae9c929a, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: d0d82b6184e574f8895567c4ae9c929a,
+    type: 2}
 --- !u!196 &5
 NavMeshSettings:
   serializedVersion: 2
@@ -135,6 +136,9 @@ GameObject:
   - component: {fileID: 827460512}
   - component: {fileID: 827460510}
   - component: {fileID: 827460509}
+  - component: {fileID: 827460514}
+  - component: {fileID: 827460515}
+  - component: {fileID: 827460516}
   m_Layer: 0
   m_Name: _MainCamera
   m_TagString: MainCamera
@@ -211,7 +215,70 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -40}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &827460514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827460508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b09b97d95a9dea48b3877874a3e4a2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jsonDeckFile: {fileID: 4900000, guid: caff80825454742cba113312425f8137, type: 3}
+  deck:
+    decorators: []
+    cards: []
+--- !u!114 &827460515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827460508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 790f65f7a4900d5458983f2cb2c9f23c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardSprites: {fileID: 11400000, guid: 6c57e1f3cd71301439b52af5a615ff9c, type: 2}
+  prefabCard: {fileID: 2833528877452616050, guid: 271eba5484844a7499513d20638fc95b,
+    type: 3}
+  prefabSprite: {fileID: 1000014090761352, guid: 30a6ba41f0d264815a76b64a60ee0b62,
+    type: 3}
+  startFaceUp: 1
+  deckAnchor: {fileID: 0}
+  cards: []
+--- !u!114 &827460516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827460508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756dd42044dc58e4781186f0c7aedb00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jsonLayoutFile: {fileID: 4900000, guid: 0579412819a174464adf828afde18c5f, type: 3}
+  layout:
+    multiplier: {x: 0, y: 0}
+    slots: []
+    drawPile:
+      x: 0
+      y: 0
+      layer: 
+      xStagger: 0
+    discardPile:
+      x: 0
+      y: 0
+      layer: 
+      xStagger: 0
