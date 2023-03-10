@@ -177,4 +177,58 @@ public class Card : MonoBehaviour
         _tGO.name = "back";
         back = _tGO;
     }
+
+    private SpriteRenderer[] spriteRenderers;
+
+    //Gather all SpriteRenderers on this and its children into an array
+    void PopulateSpriteRenderers() {
+        //If we've already populated spriteRenderers, just return
+        if (spriteRenderers != null) return;
+        
+        //Get Componen is slow but we're only doing it once per card
+        spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+    }
+
+    //Moves the Sprites of this Card into a specified sorting layer
+    public void SetSpriteSortingLayer(string layerName) {
+        PopulateSpriteRenderers();
+
+        foreach( SpriteRenderer srend in spriteRenderers) {
+            srend.sortingLayerName = layerName;
+        }
+    }
+
+    //Sets the sortingOrder of the Sprites on this Card. This allows
+    //Mutliple Cards to be in the same sorting layer and still overlap properly, and
+    //it is used by both draw and discard piles
+    public void SetSortingOrder(int sOrd) {
+        PopulateSpriteRenderers();
+
+        foreach(SpriteRenderer srend in spriteRenderers) {
+            if(srend.gameObject == this.gameObject) {
+                //If the gameObject is this.gameObject its the card face
+                srend.sortingOrder = sOrd;  //Set its order to sOrd
+            } else if (srend.gameObject.name == "back") {
+                srend.sortingOrder = sOrd + 2;
+            } else {
+                srend.sortingOrder = sOrd + 1;
+            }
+        }
+    }
+
+    //Virtual methods can be overridden by subclass methods with the same name
+    virtual public void OnMouseUpAsButton() {
+        print(name);
+    }
+
+    public bool AdjacentTo(Card otherCard, bool wrap = true) {
+        if(!faceUp || !otherCard.faceUp) return (false);
+
+        if(wrap) {
+            if (rank == 1 && otherCard.rank == 13) return(true);
+            if (rank == 13 && otherCard.rank == 1) return(true);
+        }
+
+        return (false);
+    }
 }
