@@ -202,9 +202,9 @@ public class Prospector : MonoBehaviour
 
     void GameOver( bool won ) {
         if(won) {
-            Debug.Log("Game Over. You Win!");
+            ScoreManager.TALLY( eScoreEvent.gameWin );
         } else {
-            Debug.Log("Game Over. You Lost.");
+            ScoreManager.TALLY( eScoreEvent.gameLoss );
         }
 
         CardSpritesSO.RESET();
@@ -225,6 +225,7 @@ public class Prospector : MonoBehaviour
                 //call two methods on the Prospector Singleton S
                 S.MoveToTarget( S.Draw());
                 S.UpdateDrawPile();
+                ScoreManager.TALLY( eScoreEvent.draw );
                 break;
             
             case eCardState.mine:
@@ -241,6 +242,7 @@ public class Prospector : MonoBehaviour
                     S.MoveToTarget(cp);
 
                     S.SetMineFaceUps();
+                    ScoreManager.TALLY( eScoreEvent.mine );
                 }
                 break;
         }
