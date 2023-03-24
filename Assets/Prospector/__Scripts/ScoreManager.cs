@@ -20,6 +20,12 @@ public class ScoreManager : MonoBehaviour
     static public int HIGH_SCORE = 0;
 
     [Header("Inscribed")]
+    public GameObject floatingScorePrefab;
+    public float floatDuration = 0.75f;
+    public Vector2 fsPosMid = new Vector2(0.5f, 0.90f);
+    public Vector2 fsPosRun = new Vector2(0.5f, 0.75f);
+    public Vector2 fsPosMid2 = new Vector2(0.4f, 1.0f);
+    public Vector2 fsPosEnd = new Vector2(0.5f, 0.95f);
     [Tooltip("If true, then score events are logged to the Console")]
     public bool logScoreEvents = true;
 
@@ -51,18 +57,13 @@ public class ScoreManager : MonoBehaviour
         S.Tally(evt);
     }
 
-    ///<summary>
-    ///Handle eScoreEvents (mostly sent by the Prospector class)
-    ///</summary>
-    void Tally( eScoreEvent evt ){
-        switch( evt ) {
-            //When a mine card is clicked
-            case eScoreEvent.mine:      //remove a mine card
-                chain++;                    //increase the score chain
-                scoreRun += chain;          //add score for this card to run
+    void Tally(eScoreEvent evt){
+        switch (evt){
+            case eScoreEvent.mine:
+                chain++;
+                scoreRun += chain;
                 break;
             
-            //These same things need to happen whether its a draw, win, or loss
             case eScoreEvent.draw:
             case eScoreEvent.gameWin:
             case eScoreEvent.gameLoss:
@@ -71,6 +72,7 @@ public class ScoreManager : MonoBehaviour
                 scoreRun = 0;
                 break;
         }
+
 
         string scoreStr = score.ToString( "#,##0" );
         //This second switch statement handles round wins and losses
@@ -104,6 +106,12 @@ public class ScoreManager : MonoBehaviour
                 Log($"score:{scoreStr} scoreRun:{scoreRun} chain:{chain}");
                 break;
         }
+
+        FloatingScoreHandler(evt);
+
+        if(evt == eScoreEvent.gameWin || evt == eScoreEvent.gameLoss){
+            FloatingScore.REROUTE_TO_SCOREBOARD();
+        }
         
     }
 
@@ -122,4 +130,66 @@ public class ScoreManager : MonoBehaviour
     static public int CHAIN {get{return S.chain;}}
     static public int SCORE {get{return S.score;}}
     static public int SCORE_RUN {get{return S.scoreRun;}}
+
+    private Transform canvasTrans;
+    private FloatingScore fsFirstInRun;
+
+    void Start() {
+        ScoreBoard.SCORE = SCORE;
+        canvasTrans = GameObject.Find("Canvas").transform;
+    }
+
+    void FloatingScoreHandler(eScoreEvent evt){
+        List<Vector2> fsPts;
+        switch(evt){
+            case eScoreEvent.mine:
+                GameObject go = Instantiate<GameObject>(floatingScorePrefab);
+                go.transform.SetParent(canvasTrans);
+                go.transform.localScale = Vector3.one;
+                go.transform.localPosition = Vector3.zero;
+                FloatingScore fs = go.GetComponent<FloatingScore>();
+                
+                fs.score = chain;
+
+                Vector2 mousePos = Input.mousePosition;
+
+                mousePos.x /= Screen.width;
+                mousePos.y /= Screen.height;
+
+                fsPts = new List<Vector2>();
+                fsPts.Add(mousePos);
+                fsPts.Add(fsPosMid);
+                fsPts.Add(fsPosRun);
+
+                fs.fontSizes = new float[] {10,56,10};
+
+                if(fsFirstInRun == null) {
+                    fsFirstInRun = fs;
+                    fs.fontSizes[2] = 48;
+                } else {
+                    fs.FSCallbackEvent += fsFirstInRun.FSCallback;
+                }
+
+                fs.Init(fsPts, floatDuration);
+                break;
+            
+            case eScoreEvent.draw:
+            case eScoreEvent.gameWin:
+            case eScoreEvent.gameLoss:
+                if(fsFirstInRun != null){
+                    fsPts = new List<Vector2>();
+                    fsPts.Add(fsPosRun);
+                    fsPts.Add(fsPosMid2);
+                    fsPts.Add(fsPosEnd);
+
+                    fsFirstInRun.fontSizes = new float[] {48,56,10};
+                    fsFirstInRun.FSCallbackEvent += ScoreBoard.FS_CALLBACK;
+
+                    fsFirstInRun.Init(fsPts, floatDuration, 0);
+                    fsFirstInRun = null;
+
+                }
+                break;
+        }
+    }
 }
