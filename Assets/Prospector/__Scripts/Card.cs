@@ -222,7 +222,11 @@ public class Card : MonoBehaviour
     }
 
     public bool AdjacentTo(Card otherCard, bool wrap = true) {
+        //if either card is face down its not a valid match
         if(!faceUp || !otherCard.faceUp) return (false);
+
+        //if the ranks are 1 apart, they are adjacent
+        if(Mathf.Abs(rank - otherCard.rank) == 1) return (true);
 
         if(wrap) {
             if (rank == 1 && otherCard.rank == 13) return(true);
